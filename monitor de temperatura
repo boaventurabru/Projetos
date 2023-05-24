@@ -1,0 +1,42 @@
+// Sala.java
+public class Sala {
+    private String nome;
+    private double temperatura;
+
+    public Sala(String nome) {
+        this.nome = nome;
+        this.temperatura = 0.0;
+    }
+
+    public double getTemperatura() {
+        return temperatura;
+    }
+
+    public void setTemperatura(double temperatura) {
+        this.temperatura = temperatura;
+        System.out.println("Temperatura da Sala " + nome + " atualizada: " + temperatura);
+    }
+}
+// SalaMonitor.java
+public aspect SalaMonitor {
+    pointcut monitorarTemperatura(Sala sala): target(sala) && call(void Sala.setTemperatura(double));
+
+    after(Sala sala): monitorarTemperatura(sala) {
+        double temperatura = sala.getTemperatura();
+        if (temperatura > 25.0) {
+            System.out.println("ALERTA: A temperatura da Sala " + sala.getNome() + " está muito alta!");
+        }
+    }
+}
+// Main.java
+public class Main {
+    public static void main(String[] args) {
+        Sala sala1 = new Sala("Sala 1");
+        Sala sala2 = new Sala("Sala 2");
+        Sala sala3 = new Sala("Sala 3");
+
+        sala1.setTemperatura(22.0);
+        sala2.setTemperatura(27.5);
+        sala3.setTemperatura(23.8);
+    }
+}
